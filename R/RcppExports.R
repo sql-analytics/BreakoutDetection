@@ -5,6 +5,10 @@ EDM_multi <- function(Z, min_size = 24L, beta = 0, degree = 0L) {
     .Call('BreakoutDetection_EDM_multi', PACKAGE = 'BreakoutDetection', Z, min_size, beta, degree)
 }
 
+EDM_multi_a <- function(Z, min_size = 24L, min_rsize = 12L, beta = 0, degree = 0L) {
+    .Call('BreakoutDetection_EDM_multi_a', PACKAGE = 'BreakoutDetection', Z, min_size, min_rsize, beta, degree)
+}
+
 EDM_percent <- function(Z, min_size = 24L, percent = 0, degree = 0L) {
     .Call('BreakoutDetection_EDM_percent', PACKAGE = 'BreakoutDetection', Z, min_size, percent, degree)
 }

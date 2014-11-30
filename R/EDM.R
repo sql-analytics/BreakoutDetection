@@ -58,6 +58,7 @@ breakout = function(Z, min.size = 30, method = 'amoc', ...){
 
 		beta = argList[['beta']]
 		percent = argList[['percent']]
+		min_rsize = argList[['min.rsize']];
 	}
 	#Select the correct EDM subroutine to run
 	if(!multi && exact)
@@ -71,7 +72,11 @@ breakout = function(Z, min.size = 30, method = 'amoc', ...){
 		if(is.null(beta))
 			beta = 0.008
 		penalty = beta
-		Analysis = EDM_multi
+		if (is.null(min_rsize)){
+			Analysis = EDM_multi
+		} else {
+			Analysis = EDM_multi_a
+		}
 	}
 	
 	else if(multi && is.null(beta) && !is.null(percent)){
@@ -106,10 +111,15 @@ breakout = function(Z, min.size = 30, method = 'amoc', ...){
 
 	else{
 		p1 = proc.time()
-		retList = Analysis(Zcounts, min.size, penalty, degree)
+		if (is.null(min_rsize)){
+			retList = Analysis(Zcounts, min.size, penalty, degree)
+		} else {
+			retList = Analysis(Zcounts, min.size, min_rsize, penalty, degree)
+		}
 		p2 = proc.time()
 		retList$time = as.numeric((p2-p1)[3])
 		retList$pval = NA
+		retList$algo = Analysis
 	}
 
 	#Check to see if plotting was desired and generate plot if necessary

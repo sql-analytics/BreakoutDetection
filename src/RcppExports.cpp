@@ -23,6 +23,25 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// EDM_multi
+List EDM_multi_a(const NumericVector& Z, int min_size = 24, int min_rsize = 12, double beta = 0, int degree = 0);
+RcppExport SEXP BreakoutDetection_EDM_multi_a(SEXP ZSEXP, SEXP min_sizeSEXP, SEXP min_rsizeSEXP, SEXP betaSEXP, SEXP degreeSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const NumericVector& >::type Z(ZSEXP );
+        Rcpp::traits::input_parameter< int >::type min_size(min_sizeSEXP );
+		Rcpp::traits::input_parameter< int >::type min_rsize(min_rsizeSEXP );
+        Rcpp::traits::input_parameter< double >::type beta(betaSEXP );
+        Rcpp::traits::input_parameter< int >::type degree(degreeSEXP );
+        List __result = EDM_multi_a(Z, min_size, min_rsize, beta, degree);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // EDM_percent
 List EDM_percent(const NumericVector& Z, int min_size = 24, double percent = 0, int degree = 0);
 RcppExport SEXP BreakoutDetection_EDM_percent(SEXP ZSEXP, SEXP min_sizeSEXP, SEXP percentSEXP, SEXP degreeSEXP) {
