@@ -33,7 +33,7 @@ List EDM_multi_a(const NumericVector& Z, int min_size=24, int min_rsize=12, doub
 	vector<int> end(n+1,0);//store optimal location of the end of prevoius change point box
 	vector<int> sign(n+1,0);//store optimal location of the end of prevoius change point box
 	vector<int> number(n+1,0);//store the number of change points in optimal segmentation
-	vector<double> F(n+1,-3);//store optimal statistic value
+	vector<double> F(n+1,0);//store optimal statistic value
 	//F[s] is calculated using observations { Z[0], Z[1], ..., Z[s-1] }
 
 	//trees used to store the "upper half" of the considered observations
@@ -73,16 +73,15 @@ List EDM_multi_a(const NumericVector& Z, int min_size=24, int min_rsize=12, doub
 			//calculate statistic value
 			double left_median = get_median(left_min,left_max), right_median = get_median(right_min,right_max);
 			double normalize = ( (t-prev[t]) * (s-t) ) / ( std::pow((double)(s-prev[t]),2.0) );
-			double tmp = F[t] + normalize * std::pow(left_median - right_median,2.0) - beta*G(number[t]);
+			double tmp = normalize * std::pow(left_median - right_median,2.0) - beta*G(number[t]);
 			//check for improved optimal statistic value
 			if(tmp > F[s]){
 				number[s] = number[t] + 1;
 				F[s] = tmp;
 				prev[s] = t;
 				start[s] = (left_min.size() + left_max.size());
-				end[s] = right_min.size() + right_max.size();
+				end[s] = s;
 				sign[s] = 0;
-				cout << prev[s] << " " << start[s] << "  " << end[s] << endl;
 				if (left_median > right_median)
 					sign[s] = -1;
 				if (left_median < right_median)
@@ -97,17 +96,19 @@ List EDM_multi_a(const NumericVector& Z, int min_size=24, int min_rsize=12, doub
 	int at = n;
 	while(at){
 		if(prev[at]) {//don't insert 0 as a change point estimate
-			ret.push_back(prev[at]);
-			st.push_back(start[at]);
-			ed.push_back(end[at]);
-			sn.push_back(sign[at]);
+		    ret.push_back(prev[at]);
+		    st.push_back(start[at]);
+		    ed.push_back(end[at]);
+		    sn.push_back(sign[at]);
 		}
 		at = prev[at];
 	}
-	sort(ret.begin(),ret.end());
+	//sort(ret.begin(),ret.end());
 
 	//return statment used for debugging
-	//return List::create(_["loc"]=ret, _["F"]=F, _["number"]=number,_["prev"]=prev);
+	return List::create(_["loc"]=ret, _["F"]=F, _["number"]=number,_["prev"]=prev);
 
-	return List::create(_["loc"]=ret, _["start"]=st, _["end"]=ed, _["sign"]=sn);
+	//return List::create(_["loc"]=ret, _["start"]=st, _["end"]=ed, _["sign"]=sn, _["F"]=F);
+	//return List::create(_["loc"]=ret);
+	//breturn List::create(_["loc"]=ret, _["F"]=F, _["prev"]=prev);
 }
